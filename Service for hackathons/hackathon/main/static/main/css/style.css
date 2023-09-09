@@ -1,0 +1,31 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    margin-right: 10px;
+}
+
+.search-bar {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.search-input {
+    margin-right: 5px;
+}
+
+.logo {
+    margin-left: 10px;
+    width: 100px;
+    height: 100px;
+}
