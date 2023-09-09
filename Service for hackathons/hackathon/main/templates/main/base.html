@@ -5,28 +5,27 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="icon" href="{% static 'main/img/logo.ico' %}" type="image/png">
 </head>
 <body>
-<div class="navbar">
-    <img src="{% static 'main/img/logo.png' %}" alt="Logo" class="logo">
-    <div class="nav-links">
-        <a href="#">О нас</a>
-        <a href="#">Мероприятия</a>
-        <a href="#">Войти</a>
+    <div class="navbar">
+        <div class="nav-links">
+            <img src="{% static 'main/img/logo.png' %}" alt="Logo" class="logo">
+            <ul class="nav-elem">
+                <li><a href="{% url 'about' %}">О нас</a></li>
+                <li><a href="{% url 'events' %}">Мероприятия</a></li>
+                <li><a href="#">Войти</a></li>
+            </ul>
+        </div>
     </div>
-</div>
-
-<div class="search-bar">
-    <input type="text" placeholder="Поиск..." class="search-input">
-    <button class="search-button">Поиск</button>
-</div>
-
-<div class="content">
-    {% block content %}
-    {% endblock %}
-</div>
-
-
+    <div class="search-bar">
+        <input type="text" placeholder="Поиск..." class="search-input">
+        <button class="search-button">Поиск</button>
+    </div>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>

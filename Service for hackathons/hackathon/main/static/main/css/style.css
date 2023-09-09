@@ -9,10 +9,12 @@
 .nav-links {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
-.nav-links a {
-    margin-right: 10px;
+.logo, .nav-links {
+    display: flex;
+    align-items: center;
 }
 
 .search-bar {
@@ -26,6 +28,33 @@
 
 .logo {
     margin-left: 10px;
-    width: 100px;
-    height: 100px;
+    width: 5%;
+    height: 5%;
+}
+
+
+.nav-elem {
+    display: flex;
+    list-style-type: none;
+    position: absolute;
+    right: 0;
+}
+
+.nav-elem li {
+    margin-right: 10px;
+}
+
+.nav-elem li:last-child {
+    margin-right: 0;
+}
+
+.nav-elem a {
+    text-decoration: none;
+    color: black;
+}
+
+.content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
 }
