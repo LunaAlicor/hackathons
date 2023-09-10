@@ -15,7 +15,17 @@
             <ul class="nav-elem">
                 <li><a href="{% url 'about' %}">О нас</a></li>
                 <li><a href="{% url 'events' %}">Мероприятия</a></li>
-                <li><a href="{% url 'login' %}">Войти</a></li>
+                                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
+                        <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
+                    {% else %}
+                        <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
+                        <li><a href="#">Чаты</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{% url 'login' %}">Войти</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

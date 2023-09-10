@@ -2,5 +2,14 @@
 
 {% block title %}Login{% endblock %}
 {% block content %}
-<h2>Войти</h2>
+ <h2>Войти</h2>
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% endif %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+    </form>
+    <p>Еще не зарегистрированы? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
 {% endblock %}
