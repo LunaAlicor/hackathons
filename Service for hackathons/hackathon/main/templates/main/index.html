@@ -1,8 +1,31 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Hackathons{% endblock %}
+{% block title %}Новости{% endblock %}
 
 {% block content %}
-<h1>Hello world</h1>
-
+<ul>
+  {% for single_news in news %}
+    <li>
+      <h1>{{ single_news.title }}</h1>
+      <p>{{ single_news.content }}</p>
+      <p>Автор: {{ single_news.author }}</p>
+      <p>Дата публикации: {{ single_news.date_published }}</p>
+      <img src="{{ single_news.photo.url }}" alt="Фото новости">
+      <p>Количество лайков: <span id="like-count-{{ single_news.id }}">{{ single_news.like_count }}</span></p>
+      <button type="button" onclick="">Like</button>
+      <h2>Комментарии:</h2>
+    </li>
+    <ul>
+      {% for comment in single_news.comment_set.all %}
+        <li>
+          <p>{{ comment.content }}</p>
+          <p>Автор комментария: {{ comment.user }}</p>
+          <p>Дата комментария: {{ comment.date_posted }}</p>
+          <p>Количество лайков: {{ comment.like_count }}</p>
+          <button type="button" onclick="">Like</button>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</ul>
 {% endblock %}

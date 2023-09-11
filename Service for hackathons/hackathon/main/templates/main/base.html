@@ -3,39 +3,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
-    <link rel="icon" href="{% static 'main/img/logo.ico' %}" type="image/png">
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+  <link rel="icon" href="{% static 'main/img/logo.ico' %}" type="image/png">
+  <script src="{% static 'main/js/main.js' %}"></script>
+  <script src="{% static 'main.js' %}"></script>
 </head>
 <body>
-    <div class="navbar">
-        <div class="nav-links">
-            <img src="{% static 'main/img/logo.png' %}" alt="Logo" class="logo">
-            <ul class="nav-elem">
-                <li><a href="{% url 'about' %}">О нас</a></li>
-                <li><a href="{% url 'events' %}">Мероприятия</a></li>
-                                {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                        <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
-                        <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
-                    {% else %}
-                        <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
-                        <li><a href="#">Чаты</a></li>
-                    {% endif %}
-                {% else %}
-                    <li><a href="{% url 'login' %}">Войти</a></li>
-                {% endif %}
-            </ul>
-        </div>
+  <div class="navbar">
+    <div class="nav-links">
+      <img src="{% static 'main/img/logo.png' %}" alt="Logo" class="logo">
+      <ul class="nav-elem">
+        <li><a href="{% url 'about' %}">О нас</a></li>
+        <li><a href="{% url 'events' %}">Мероприятия</a></li>
+        <li><a href="{% url 'index' %}">Новости</a></li>
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
+          {% endif %}
+          <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
+          <li><a href="#">Чаты</a></li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Войти</a></li>
+        {% endif %}
+      </ul>
     </div>
-    <div class="search-bar">
-        <input type="text" placeholder="Поиск..." class="search-input">
-        <button class="search-button">Поиск</button>
-    </div>
-    <div class="content">
-        {% block content %}
-        {% endblock %}
-    </div>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Поиск..." class="search-input">
+    <button class="search-button">Поиск</button>
+  </div>
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
 </body>
 </html>

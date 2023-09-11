@@ -1,17 +1,23 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from .models import News, Comment, Like
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    news = News.objects.all()
+    comments = Comment.objects.all()
+    return render(request, 'main/index.html', {'news': news, 'comments': comments})
 
 
 def about(request):
@@ -62,3 +68,27 @@ def register_view(request):
         return redirect('index')
 
     return render(request, 'main/register.html')
+
+
+# @login_required
+# def like_news(request, news_id):
+#     news = News.objects.get(id=news_id)
+#     news.like_count += 1
+#     news.save()
+#
+#     return redirect('news_detail', news_id=news_id)
+
+
+# @login_required
+# def comment_news(request, news_id):
+#     news = News.objects.get(id=news_id)
+#     user = request.user
+#     content = request.POST['content']
+#
+#     comment = Comment(user=user, news=news, content=content)
+#     comment.save()
+#
+#     return redirect('news_detail', news_id=news.id)
+
+
+
