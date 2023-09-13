@@ -13,19 +13,43 @@
       <img src="{{ single_news.photo.url }}" alt="Фото новости">
       <p>Количество лайков: <span id="like-count-{{ single_news.id }}">{{ single_news.like_count }}</span></p>
       <button type="button" onclick="">Like</button>
+      <button type="button" onclick="location.href='{{ single_news.id }}'">Перейти к новости</button>
       <h2>Комментарии:</h2>
-    </li>
-    <ul>
-      {% for comment in single_news.comment_set.all %}
+
+      <!-- Первый комментарий -->
+      <ul>
         <li>
-          <p>{{ comment.content }}</p>
-          <p>Автор комментария: {{ comment.user }}</p>
-          <p>Дата комментария: {{ comment.date_posted }}</p>
-          <p>Количество лайков: {{ comment.like_count }}</p>
+          <p>{{ single_news.comment_set.first.content }}</p>
+          <p>Автор комментария: {{ single_news.comment_set.first.user }}</p>
+          <p>Дата комментария: {{ single_news.comment_set.first.date_posted }}</p>
+          <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
           <button type="button" onclick="">Like</button>
         </li>
-      {% endfor %}
-    </ul>
+      </ul>
+
+      <!-- Остальные комментарии (начально скрыты) -->
+      <ul id="hidden-comments-{{single_news.id}}" style="display:none">
+        {% for comment in single_news.comment_set.all|slice:"1:" %}
+          <li>
+            <p>{{ comment.content }}</p>
+            <p>Автор комментария: {{ comment.user }}</p>
+            <p>Дата комментария: {{ comment.date_posted }}</p>
+            <p>Количество лайков: {{ comment.like_count }}</p>
+            <button type="button" onclick="">Like</button>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <button type="button" onclick="showAllComments({{single_news.id}})">Показать все комментарии</button>
+
+      <script>
+        function showAllComments(newsId) {
+          var hiddenComments = document.getElementById('hidden-comments-' + newsId);
+          hiddenComments.style.display = 'block';
+        }
+      </script>
+
+    </li>
   {% endfor %}
 </ul>
 {% endblock %}

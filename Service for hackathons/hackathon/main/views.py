@@ -70,6 +70,11 @@ def register_view(request):
     return render(request, 'main/register.html')
 
 
+def news_detail(request, pk):
+    post = News.objects.get(id=pk)
+    return render(request, 'main/news_detail.html', {'post': post})
+
+
 # @login_required
 # def like_news(request, news_id):
 #     news = News.objects.get(id=news_id)

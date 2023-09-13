@@ -60,6 +60,18 @@
       margin-top: 2%;
 }
 
-/*.category{*/
-/*    float: right;*/
-/*}*/
+.hidden-comment {
+  display: none;
+}
+
+#show-comments-btn {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+}
+
+#show-comments-btn:hover {
+  background-color: #aaa;
+}
