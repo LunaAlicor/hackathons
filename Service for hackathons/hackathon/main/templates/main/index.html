@@ -1,8 +1,13 @@
 {% extends 'main/base.html' %}
-
+{% load static %}
 {% block title %}Новости{% endblock %}
 
 {% block content %}
+  {% if user.is_staff %}
+    <div class="admin-panel">
+      <button>Создать новость</button>
+    </div>
+  {% endif %}
 <ul>
   {% for single_news in news %}
     <li>
@@ -15,8 +20,14 @@
       <button type="button" onclick="">Like</button>
       <button type="button" onclick="location.href='{{ single_news.id }}'">Перейти к новости</button>
       <h2>Комментарии:</h2>
+      <div>
+        <button><label>Оставить комментарий: </label></button>
+        <textarea name="content"></textarea>
+      </div>
 
       <!-- Первый комментарий -->
+      {% if single_news.has_comments  %}
+
       <ul>
         <li>
           <p>{{ single_news.comment_set.first.content }}</p>
@@ -24,6 +35,9 @@
           <p>Дата комментария: {{ single_news.comment_set.first.date_posted }}</p>
           <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
           <button type="button" onclick="">Like</button>
+          {% if user.is_staff %}
+            <button>Удалить комментарий</button>
+          {% endif %}
         </li>
       </ul>
 
@@ -36,11 +50,15 @@
             <p>Дата комментария: {{ comment.date_posted }}</p>
             <p>Количество лайков: {{ comment.like_count }}</p>
             <button type="button" onclick="">Like</button>
+            {% if user.is_staff %}
+            <button>Удалить комментарий</button>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
 
       <button type="button" onclick="showAllComments({{single_news.id}})">Показать все комментарии</button>
+      {% endif %}
 
       <script>
         function showAllComments(newsId) {

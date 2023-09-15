@@ -3,6 +3,12 @@
 {% block title %}News detail {% endblock %}
 
 {% block content %}
+  {% if user.is_staff %}
+    <div>
+        <button>Удалить  новость</button>
+        <button>Редактировать  новость</button>
+    </div>
+  {% endif %}
 <ul>
    <li> <h1>{{ post.title }}</h1></li>
    <li> <p>{{ post.content }}</p></li>
@@ -10,5 +16,23 @@
    <li> <p>Дата публикации: {{ post.date_published }}</p></li>
    <li> <img src="{{ post.photo.url }}" alt="Фото новости"></li>
    <li> <p>Количество лайков: {{ post.like_count }}</p></li>
+   <button onclick="history.go(-1);">Назад</button>
+   <button type="button" onclick="">Like</button>
+   <h2>Комментарии: </h2>
+       <div>
+        <button><label>Оставить комментарий: </label></button>
+        <textarea name="content"></textarea>
+      </div>
+    <ul>
+    {% for comment in post.comment_set.all %}
+         <p><li>{{ comment.content }}</li></p>
+          <p>Автор комментария: {{ comment.user }}</p>
+          <p>Дата комментария: {{ comment.date_posted }}</p>
+          <p>Лайки: {{ comment.like_count }}</p>
+          {% if user.is_staff %}
+            <button>Удалить комментарий</button>
+          {% endif %}
+    {% endfor %}
+  </ul>
 </ul>
 {% endblock %}

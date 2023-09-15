@@ -9,8 +9,12 @@ class News(models.Model):
     content = models.TextField()
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     date_published = models.DateTimeField(auto_now_add=True)
-    photo = models.ImageField(upload_to='main/img/news_photos/', default='main/img/news_photos/news_def.jpg')
+    photo = models.ImageField(upload_to='image/%Y',
+                              default='news_def.jpg')
     like_count = models.PositiveIntegerField(default=0)
+
+    def has_comments(self):
+        return self.comment_set.exists()
 
 
 class Comment(models.Model):
