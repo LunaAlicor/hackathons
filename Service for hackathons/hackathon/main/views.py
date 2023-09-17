@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm
+from .forms import LoginForm, NewsEditForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
@@ -116,3 +116,15 @@ def create_news(request):
         return redirect('index')
 
     return render(request, 'main/create_news.html')
+
+
+def edit_news(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    if request.method == 'POST':
+        form = NewsEditForm(request.POST, request.FILES, instance=news)
+        if form.is_valid():
+            form.save()
+            return redirect('news_detail', pk=pk)
+    else:
+        form = NewsEditForm(instance=news)
+    return render(request, 'main/edit_news.html', {'form': form})

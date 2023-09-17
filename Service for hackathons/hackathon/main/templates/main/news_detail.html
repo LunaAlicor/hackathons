@@ -3,12 +3,12 @@
 {% block title %}News detail {% endblock %}
 
 {% block content %}
-  {% if user.is_staff %}
+{% if user.is_staff %}
     <div>
         <button>Удалить новость</button>
-        <button>Редактировать  новость</button>
+        <a href="{% url 'edit_news' post.id %}"><button>Редактировать новость</button></a>
     </div>
-  {% endif %}
+{% endif %}
 <ul>
    <li> <h1>{{ post.title }}</h1></li>
    <li> <p>{{ post.content }}</p></li>
