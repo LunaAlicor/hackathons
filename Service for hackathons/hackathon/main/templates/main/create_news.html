@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block title %} Создание новости {% endblock %}
+
+{% block content %}
+{% if user.is_staff %}
+  <h2>Создание новости</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="title">Заголовок</label>
+    <input type="text" id="title" name="title">
+    <br>
+    <label for="content">Текст новости</label>
+    <textarea id="content" name="content"></textarea>
+    <br>
+    <label for="photo">Фото</label>
+    <input type="file" id="photo" name="photo">
+    <br>
+    <button type="submit">Создать новость</button>
+  </form>
+{% endif %}
+{% endblock %}

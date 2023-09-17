@@ -9,6 +9,7 @@ from .models import News, Comment, Like
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ValidationError
 
 
 # Create your views here.
@@ -96,4 +97,22 @@ def news_detail(request, pk):
 #     return redirect('news_detail', news_id=news.id)
 
 
+def create_news(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        content = request.POST['content']
+        author = request.user
+        photo = request.FILES.get('photo')
 
+        if photo is None:
+            photo = 'news_def.jpg'
+
+        try:
+            news = News(title=title, content=content, author=author, photo=photo)
+            news.save()
+        except ValidationError as e:
+            pass
+
+        return redirect('index')
+
+    return render(request, 'main/create_news.html')

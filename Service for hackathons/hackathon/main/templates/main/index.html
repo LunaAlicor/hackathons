@@ -3,9 +3,10 @@
 {% block title %}Новости{% endblock %}
 
 {% block content %}
+
   {% if user.is_staff %}
     <div class="admin-panel">
-      <button>Создать новость</button>
+      <a href="{% url 'create_news' %}"><button>Создать новость</button></a>
     </div>
   {% endif %}
 <ul>

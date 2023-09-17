@@ -9,8 +9,7 @@ class News(models.Model):
     content = models.TextField()
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     date_published = models.DateTimeField(auto_now_add=True)
-    photo = models.ImageField(upload_to='image/%Y',
-                              default='news_def.jpg')
+    photo = models.ImageField(upload_to='image/%Y', default='image/news_def.jpg', null=True, blank=True)
     like_count = models.PositiveIntegerField(default=0)
 
     def has_comments(self):

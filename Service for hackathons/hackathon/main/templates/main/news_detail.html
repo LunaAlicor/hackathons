@@ -5,7 +5,7 @@
 {% block content %}
   {% if user.is_staff %}
     <div>
-        <button>Удалить  новость</button>
+        <button>Удалить новость</button>
         <button>Редактировать  новость</button>
     </div>
   {% endif %}
@@ -29,6 +29,7 @@
           <p>Автор комментария: {{ comment.user }}</p>
           <p>Дата комментария: {{ comment.date_posted }}</p>
           <p>Лайки: {{ comment.like_count }}</p>
+          <button type="button" onclick="">Like</button>
           {% if user.is_staff %}
             <button>Удалить комментарий</button>
           {% endif %}
