@@ -16,7 +16,7 @@ from django.core.exceptions import ValidationError
 
 
 def index(request):
-    news = News.objects.all()
+    news = News.objects.all().order_by('-id')
     comments = Comment.objects.all()
     return render(request, 'main/index.html', {'news': news, 'comments': comments})
 
