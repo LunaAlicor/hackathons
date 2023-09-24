@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
+from django.utils import timezone
 
 
 class News(models.Model):
@@ -38,6 +40,12 @@ class Like(models.Model):
 
 
 class Event(models.Model):
+    STATUS_CHOICES = (
+        ('Активно', 'Активно'),
+        ('в архиве', 'В архиве'),
+        ('регистрация', 'Регистрация'),
+    )
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()
@@ -45,6 +53,54 @@ class Event(models.Model):
     organizer = models.CharField(max_length=100)
     content = models.TextField()
     photo = models.ImageField(upload_to='event_photos/')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Активно')
+    tags = models.ManyToManyField('Tag')
+    registration_date = models.DateField(default=timezone.now)
+    teams = models.ManyToManyField('Team', blank=True, related_name='events')  # Добавлен related_name
 
     def __str__(self):
         return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Team(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    members = models.ManyToManyField(User, through='Membership')
+
+    def __str__(self):
+        return self.name
+
+
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('ожидание', 'Ожидание'),
+        ('принято', 'Принято'),
+        ('отклонено', 'Отклонено'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ожидание')
+
+    def __str__(self):
+        return f'{self.user.username} - {self.team.name} ({self.status})'
+
+
+class TeamApplication(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('ожидание', 'Ожидание'),
+        ('принято', 'Принято'),
+        ('отклонено', 'Отклонено'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ожидание')
+
+    def __str__(self):
+        return f'{self.user.username} - {self.team.name} ({self.status})'

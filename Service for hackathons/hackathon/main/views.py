@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import News, Comment, Like
+from .models import News, Comment, Like, Event
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -26,7 +26,8 @@ def about(request):
 
 
 def events(request):
-    return render(request, 'main/events.html')
+    events = Event.objects.all().order_by('-id')
+    return render(request, 'main/events.html', {'events': events})
 
 
 def login_views(request):
@@ -128,3 +129,17 @@ def edit_news(request, pk):
     else:
         form = NewsEditForm(instance=news)
     return render(request, 'main/edit_news.html', {'form': form})
+
+
+def delete_news(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+    if not request.user.is_staff:
+        messages.error(request, "У вас нет прав на удаление новости.")
+        return redirect('index')
+
+    if request.method == 'POST':
+        news.delete()
+        messages.success(request, "Новость успешно удалена.")
+        return redirect('index')
+
+    return render(request, 'delete_news.html', {'news': news})

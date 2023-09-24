@@ -3,5 +3,11 @@
 {% block title %}About{% endblock %}
 
 {%block content%}
-<h1>Тут будут карточки хакатонов</h1>
+<h1>Хакатоны</h1><br>
+
+<div>
+    {% for single_event in events %}
+        {{ single_event.title }}
+    {% endfor %}
+</div>
 {%endblock%}

@@ -5,10 +5,22 @@
 {% block content %}
 {% if user.is_staff %}
     <div>
-        <button>Удалить новость</button>
+        <form action="{% url 'delete_news' post.id %}" method="post">
+            {% csrf_token %}
+            <button type="button" onclick="confirmDelete()">Удалить новость</button>
+        </form>
         <a href="{% url 'edit_news' post.id %}"><button>Редактировать новость</button></a>
     </div>
 {% endif %}
+
+<script>
+function confirmDelete() {
+    var result = confirm("Вы уверены, что хотите удалить новость?");
+    if (result === true) {
+        document.querySelector("form").submit();
+    }
+}
+</script>
 <ul>
    <li> <h1>{{ post.title }}</h1></li>
    <li> <p>{{ post.content }}</p></li>
