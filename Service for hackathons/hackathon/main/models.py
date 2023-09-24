@@ -56,7 +56,7 @@ class Event(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Активно')
     tags = models.ManyToManyField('Tag')
     registration_date = models.DateField(default=timezone.now)
-    teams = models.ManyToManyField('Team', blank=True, related_name='events')  # Добавлен related_name
+    teams = models.ManyToManyField('Team', blank=True, related_name='events')
 
     def __str__(self):
         return self.title
@@ -73,6 +73,7 @@ class Team(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User, through='Membership')
+    num_members = models.PositiveIntegerField(default=5)
 
     def __str__(self):
         return self.name

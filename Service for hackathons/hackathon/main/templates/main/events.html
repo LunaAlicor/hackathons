@@ -1,13 +1,32 @@
 {% extends 'main/base.html' %}
 
-{% block title %}About{% endblock %}
+{% block title %}Мероприятия{% endblock %}
 
 {%block content%}
 <h1>Хакатоны</h1><br>
 
 <div>
+    <ul>
     {% for single_event in events %}
-        {{ single_event.title }}
+        <ul>
+            <li>{{ single_event.title }}</li>
+            <li>{{ single_event.description }}</li>
+            <li>{{ single_event.date }}</li>
+            <li>{{ single_event.status }} {{ single_event.registration_date }}</li>
+            <li>
+            Tags:
+                <ul>
+                    {% for tag in single_event.tags.all %}
+                        <li>{{ tag.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li><img src="{{ single_event.photo.url }}" alt="Фото хакатона"></li>
+            <button type="button" onclick="location.href='{% url 'event_detail' single_event.id %}'">Подробности</button>
+
+
+        </ul>
     {% endfor %}
+    </ul>
 </div>
 {%endblock%}

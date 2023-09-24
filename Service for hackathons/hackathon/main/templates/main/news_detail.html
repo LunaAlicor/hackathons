@@ -4,22 +4,54 @@
 
 {% block content %}
 {% if user.is_staff %}
-    <div>
-        <form action="{% url 'delete_news' post.id %}" method="post">
-            {% csrf_token %}
-            <button type="button" onclick="confirmDelete()">Удалить новость</button>
-        </form>
-        <a href="{% url 'edit_news' post.id %}"><button>Редактировать новость</button></a>
-    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<div>
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Удалить новость</button>
+    <a href="{% url 'edit_news' post.id %}" class="btn btn-primary">Редактировать новость</a>
+</div>
 {% endif %}
 
+<!-- Модальное окно подтверждения удаления новости -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Подтвердите удаление новости</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить эту новость?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form action="{% url 'delete_news' post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
+var myModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
 function confirmDelete() {
     var result = confirm("Вы уверены, что хотите удалить новость?");
     if (result === true) {
         document.querySelector("form").submit();
     }
 }
+
+
+document.querySelector(".btn-danger").addEventListener("click", function() {
+    myModal.show();
+});
 </script>
 <ul>
    <li> <h1>{{ post.title }}</h1></li>

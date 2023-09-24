@@ -38,6 +38,7 @@
     list-style-type: none;
     position: absolute;
     right: 0;
+    margin-right: 3%;
 }
 
 .nav-elem li {

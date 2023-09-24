@@ -77,6 +77,11 @@ def news_detail(request, pk):
     return render(request, 'main/news_detail.html', {'post': post})
 
 
+def event_detail(request, pk):
+    event = Event.objects.get(id=pk)
+    return render(request, 'main/event_detail.html', {'event': event})
+
+
 # @login_required
 # def like_news(request, news_id):
 #     news = News.objects.get(id=news_id)
