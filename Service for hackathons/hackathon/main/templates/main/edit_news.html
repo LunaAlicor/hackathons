@@ -4,13 +4,16 @@
 
 {% block content %}
 {% if user.is_staff %}
-  <h1>Редактирование новости</h1>
+
   <form method="POST" enctype="multipart/form-data">
+    <h1>Редактирование новости</h1>
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Сохранить</button>
+     <button onclick="history.go(-1);">Назад</button>
   </form>
 
-{% endif %}
+{% else %}
  <button onclick="history.go(-1);">Назад</button>
+{% endif %}
 {% endblock %}

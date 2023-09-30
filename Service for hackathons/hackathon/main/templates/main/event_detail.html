@@ -3,8 +3,9 @@
 {% block title %} Подробности {% endblock %}
 
 {% block content %}
-{{ event.title }}
+
 <ul>
+    <h2>{{ event.title }}</h2>
     <li>Дата проведения: {{ event.date }}</li>
     <li>Место проведения: {{ event.location }}</li>
     <li>Организатор: {{ event.organizer }}</li>

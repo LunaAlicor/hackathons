@@ -4,8 +4,9 @@
 
 {% block content %}
 {% if user.is_staff %}
-  <h2>Создание новости</h2>
+
   <form method="POST" enctype="multipart/form-data">
+    <h2 style="text-align: center;margin-top: 2px;margin-bottom: 2px;">Создание новости</h2>
     {% csrf_token %}
     <label for="title">Заголовок</label>
     <input type="text" id="title" name="title">
@@ -17,8 +18,10 @@
     <input type="file" id="photo" name="photo">
     <br>
     <button type="submit">Создать новость</button>
+    <button class="back" onclick="history.go(-1);">Назад</button>
   </form>
 
+{% else %}
+<button class="back" onclick="history.go(-1);">Назад</button>
 {% endif %}
-<button onclick="history.go(-1);">Назад</button>
 {% endblock %}

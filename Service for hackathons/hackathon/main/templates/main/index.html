@@ -4,12 +4,13 @@
 
 {% block content %}
 
-  {% if user.is_staff %}
+
+<ul>
+    {% if user.is_staff %}
     <div class="admin-panel">
-      <a href="{% url 'create_news' %}"><button>Создать новость</button></a>
+      <a href="{% url 'create_news' %}"><button class="admin-panel-button">Создать новость</button></a>
     </div>
   {% endif %}
-<ul>
   {% for single_news in news %}
     <li>
       <h1>{{ single_news.title }}</h1>
@@ -22,8 +23,8 @@
       <button type="button" onclick="location.href='{{ single_news.id }}'">Перейти к новости</button>
       <h2>Комментарии:</h2>
       <div>
-        <a href=""><button><label>Оставить комментарий: </label></button></a>
-        <textarea name="content"></textarea>
+        <a href=""><button style="margin-bottom: 2px;"><label style="color: white; font-weight: bold;">Оставить комментарий: </label></button></a>
+        <textarea name="content" placeholder="Напишите ваш комментарий"></textarea>
       </div>
 
       <!-- Первый комментарий -->
@@ -58,13 +59,14 @@
         {% endfor %}
       </ul>
 
-      <button type="button" onclick="showAllComments({{single_news.id}})">Показать все комментарии</button>
+      <button type="button" onclick="showAllComments({{single_news.id}})" id="commentButton">Показать все комментарии</button>
       {% endif %}
 
       <script>
         function showAllComments(newsId) {
           var hiddenComments = document.getElementById('hidden-comments-' + newsId);
           hiddenComments.style.display = 'block';
+          document.querySelector("#commentButton").style.display = "none";
         }
       </script>
 
