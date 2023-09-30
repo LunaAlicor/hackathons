@@ -13,8 +13,16 @@
             <ul>
                 <li><h2>{{ single_event.title }}</h2></li>
                 <li>{{ single_event.description }}</li>
-                <p>Дата публикации: {{ single_event.date }}</p>
-                <li>{{ single_event.status }} {{ single_event.registration_date }}</li>
+                <li>
+                <p>Дата проведения: {{ single_event.date }}</p>
+                <p class="registration-date">Дата регистрации: {{ single_event.registration_date }}</p>
+                </li>
+
+
+                <p class="event-photo status-badge status-{{ single_event.status }}">
+                    <img src="{{ single_event.photo.url }}" alt="Фото хакатона">
+
+                </p>
                 <li>
                 <ol>
 
@@ -27,7 +35,6 @@
                     </ul>
                 </ol>
                 </li>
-                <li><img src="{{ single_event.photo.url }}" alt="Фото хакатона"></li>
                 <p><button type="button" onclick="location.href='{% url 'event_detail' single_event.id %}'">Подробности</button></li></p>
             </ul>
 

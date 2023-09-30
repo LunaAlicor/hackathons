@@ -4,26 +4,37 @@
 
 {% block content %}
 
-<ul>
+<ul style="margin-right: 3%;">
     <h2>{{ event.title }}</h2>
-    <li>Дата проведения: {{ event.date }}</li>
-    <li>Место проведения: {{ event.location }}</li>
-    <li>Организатор: {{ event.organizer }}</li>
     <li>{{ event.content }}</li>
-    <li>Дата регистрации: {{ event.registration_date }}</li>
+
     <li>
-        <ul>
-            теги:
-            {% for tag in event.tags.all %}
-                <li>{{ tag.name }}</li>
-            {% endfor %}
-        </ul>
+        <p>Организатор: {{ event.organizer }}</p>
+        <p>Место проведения: {{ event.location }}</p>
+        <p>Дата проведения: {{ event.date }}</p>
+        <p>Дата регистрации: {{ event.registration_date }}</p>
     </li>
-    <li>Список команд:
+
+    <li>
+        <ol>
+
+            <ul style="display: flex; list-style-type: none;">
+
+                {% for tag in event.tags.all %}
+                <li style="margin-right: 10px; border: 1px solid black; padding: 5px;">{{ tag.name }}</li>
+                {% endfor %}
+
+            </ul>
+        </ol>
+    </li>
+
+    <li>
+        <p>Список команд:</p>
         <ul>
+
             {% for team in event.teams.all %}
-                <li>{{ team.name }}</li>
-                <li>Список участников команды {{ team.name }}:
+                <li>{{ team.name }}
+                <p>Список участников команды {{ team.name }}:</p>
                     <ul>
                         {% for member in team.members.all %}
                             <li>{{ member.username }}</li>

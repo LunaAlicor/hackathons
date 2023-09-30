@@ -42,7 +42,7 @@ class Like(models.Model):
 class Event(models.Model):
     STATUS_CHOICES = (
         ('Активно', 'Активно'),
-        ('в архиве', 'В архиве'),
+        ('Архив', 'Архив'),
         ('регистрация', 'Регистрация'),
     )
 
