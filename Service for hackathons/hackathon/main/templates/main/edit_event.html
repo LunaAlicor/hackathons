@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Редактирование мероприятия {% endblock %}
+{% block content %}
+{% if user.is_staff %}
+
+  <form method="POST" enctype="multipart/form-data">
+    <h1>Редактирование мероприятия</h1>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+     <button onclick="history.go(-1);">Назад</button>
+  </form>
+
+{% else %}
+ <button onclick="history.go(-1);">Назад</button>
+{% endif %}
+{% endblock %}

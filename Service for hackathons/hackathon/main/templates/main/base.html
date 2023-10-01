@@ -24,7 +24,7 @@
           {% if user.is_staff %}
             <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
           {% endif %}
-          <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
+          <li><a href="{% url 'profile' %}">{{user.username}}</a></li>
           <li><a href="#">Чаты</a></li>
         {% else %}
           <li><a href="{% url 'login' %}">Войти</a></li>

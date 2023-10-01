@@ -31,20 +31,66 @@
     <li>
         <p>Список команд:</p>
         <ul>
-
-            {% for team in event.teams.all %}
+            {% for team, members in accepted_members.items %}
                 <li>{{ team.name }}
                 <p>Список участников команды {{ team.name }}:</p>
                     <ul>
-                        {% for member in team.members.all %}
+                        {% for member in members %}
                             <li>{{ member.username }}</li>
                         {% endfor %}
-                        <button>Откликнутся</button>
+                        {% if team.members.count < team.num_members %}
+                            <button>Откликнутся</button>
+                        {% endif %}
                     </ul>
                 </li>
             {% endfor %}
+
         </ul>
     </li>
     <button onclick="history.go(-1);">Назад</button>
+    {% if user.is_staff %}
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Удалить мероприятие</button>
+    <a href="{% url 'edit_event' event.id %}" class="btn btn-primary">Редактировать мероприятие</a>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Подтвердите удаление мероприятия</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить это мероприятие?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form action="{% url 'delete_event' event.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+var myModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
+function confirmDelete() {
+    var result = confirm("Вы уверены, что хотите удалить это мероприятие?");
+    if (result === true) {
+        document.querySelector("form").submit();
+    }
+}
+
+
+document.querySelector(".btn-danger").addEventListener("click", function() {
+    myModal.show();
+});
+</script>
+{% endif %}
 </ul>
 {% endblock %}

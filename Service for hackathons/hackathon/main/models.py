@@ -70,9 +70,9 @@ class Tag(models.Model):
 
 
 class Team(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)
-    members = models.ManyToManyField(User, through='Membership')
+    members = models.ManyToManyField(User, through='Membership', null=True)
     num_members = models.PositiveIntegerField(default=5)
 
     def __str__(self):

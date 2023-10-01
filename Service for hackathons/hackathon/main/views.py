@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm, NewsEditForm
+from .forms import LoginForm, NewsEditForm, EventForm, TeamForm, EditEventForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import News, Comment, Like, Event
+from .models import News, Comment, Like, Event, Team
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -79,7 +79,16 @@ def news_detail(request, pk):
 
 def event_detail(request, pk):
     event = Event.objects.get(id=pk)
-    return render(request, 'main/event_detail.html', {'event': event})
+    teams = event.teams.all()
+
+    accepted_members = {}
+    for team in teams:
+        accepted_members[team] = [member for member in team.members.all() if
+                                  member.membership_set.get(team=team).status == 'принято']
+
+    accepted_members_len = len(accepted_members)
+    return render(request, 'main/event_detail.html', {'event': event, 'accepted_members': accepted_members,
+                                                      'accepted_members_len': accepted_members_len})
 
 
 # @login_required
@@ -148,3 +157,57 @@ def delete_news(request, news_id):
         return redirect('index')
 
     return render(request, 'delete_news.html', {'news': news})
+
+
+def create_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save()
+            return redirect('events')
+    else:
+        form = EventForm()
+
+    return render(request, 'main/create_event.html', {'form': form})
+
+
+def create_team(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        num_members = request.POST['num_members']
+
+        try:
+            team = Team(name=name, num_members=num_members)
+            team.save()
+        except ValidationError as e:
+            print(e)
+            pass
+        return redirect(create_event)
+
+    return render(request, 'main/create_event.html')
+
+
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.is_staff:
+        messages.error(request, "У вас нет прав на удаление мероприятия.")
+        return redirect('events')
+
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, "Мероприятие успешно удалено.")
+        return redirect('events')
+
+    return render(request, 'delete_event.html', {'event': event})
+
+
+def edit_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        form = EditEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', pk=pk)
+    else:
+        form = EditEventForm(instance=event)
+    return render(request, 'main/edit_event.html', {'form': form})

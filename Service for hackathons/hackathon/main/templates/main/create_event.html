@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Создание мероприятия{% endblock %}
+{% block content %}
+
+{% if user.is_staff %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Создать мероприятие</button>
+    <button onclick="history.go(-1);">Назад</button>
+    <button id="openTeamModal">Создать команду</button>
+</form>
+
+
+<div id="teamModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeTeamModal">&times;</span>
+    <h2>Создание команды</h2>
+    <form method="post" action="{% url 'create_team' %}">
+      {% csrf_token %}
+        <label for="name">Имя команды</label>
+        <input type="text" id="name" name="name">
+        <label for="num_members">Число участников</label>
+        <input type="number" id="num_members" name="num_members">
+      <button type="submit">Создать</button>
+    </form>
+  </div>
+</div>
+<script>
+    document.getElementById("openTeamModal").addEventListener("click", function () {
+  document.getElementById("teamModal").style.display = "block";
+});
+
+
+document.getElementById("closeTeamModal").addEventListener("click", function () {
+  document.getElementById("teamModal").style.display = "none";
+});
+</script>
+
+
+{% else %}
+<button onclick="history.go(-1);">Назад</button>
+{% endif %}
+{% endblock %}

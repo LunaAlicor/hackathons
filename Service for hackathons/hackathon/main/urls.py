@@ -16,8 +16,11 @@ urlpatterns = [
     path('create_news/', views.create_news, name='create_news'),
     path('news/<int:pk>/edit/', views.edit_news, name='edit_news'),
     path('delete_news/<int:news_id>/', views.delete_news, name='delete_news'),
-    path('event/<int:pk>/', views.event_detail, name='event_detail')
-
+    path('event/<int:pk>/', views.event_detail, name='event_detail'),
+    path('create_event/', views.create_event, name='create_event'),
+    path('create_team/', views.create_team, name='create_team'),
+    path('delete_event/<int:event_id>/', views.delete_event, name='delete_event'),
+    path('event/<int:pk>/edit/', views.edit_event, name='edit_event'),
 ]
 
 

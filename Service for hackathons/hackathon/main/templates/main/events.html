@@ -5,9 +5,15 @@
 {%block content%}
 
 
-<div>
-    <h1 style="display: flex; justify-content: center; align-items: center;margin-bottom: 2%;">Хакатоны</h1><br>
+<div style="margin-right: 3%">
+
     <ul>
+        {% if user.is_staff %}
+            <div class="admin-panel">
+                <a href="{% url 'create_event' %}"><button class="admin-panel-button">Создать мероприятие</button></a>
+            </div>
+        {% endif %}
+    <h1 style="display: flex; justify-content: center; align-items: center;margin-bottom: 2%;">Хакатоны</h1><br>
     {% for single_event in events %}
         <li>
             <ul>
