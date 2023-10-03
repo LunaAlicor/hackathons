@@ -7,6 +7,7 @@
     {% for application in team_applications %}
     {% if application.status == 'ожидание' %}
         <li>{{application}}
+            <div>
             <form method="post" action="{% url 'approve_application' application.id %}">
                 {% csrf_token %}
                 <button type="submit" style="background: darkseagreen" name="approve">Принять</button>
@@ -16,7 +17,7 @@
                 {% csrf_token %}
                 <button type="submit" style="background: firebrick" name="reject">Отклонить</button>
             </form>
-
+            </div>
         </li>
     {% endif %}
     {% endfor %}

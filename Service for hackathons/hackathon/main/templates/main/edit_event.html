@@ -16,7 +16,9 @@
   <div class="modal-content">
     <span class="close" id="closeTeamModal">&times;</span>
     <h2>Создание команды</h2>
-    <form method="post" action="{% url 'create_team' %}">
+    <form method="post" action="{% url 'create_team_in_edit' %}">
+
+
       {% csrf_token %}
         <label for="name">Имя команды</label>
         <input type="text" id="name" name="name">

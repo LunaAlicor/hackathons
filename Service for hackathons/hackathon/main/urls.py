@@ -25,7 +25,7 @@ urlpatterns = [
     path('team_application/<int:team_id>', views.team_application, name='team_application'),
     path('approve_application/<int:application_id>/', views.approve_application, name='approve_application'),
     path('reject_application/<int:application_id>/', views.reject_application, name='reject_application'),
-
+    path('create_team_in_edit', views.create_team_in_edit, name='create_team_in_edit'),
 ]
 
 

@@ -86,9 +86,16 @@ def event_detail(request, pk):
         accepted_members[team] = [member for member in team.members.all() if
                                   member.membership_set.get(team=team).status == 'принято']
 
+    free_spots = {}
+    for team in teams:
+        num_members = team.num_members
+        accepted_count = len(accepted_members[team])
+        free_spots[team] = range(num_members - accepted_count)
+
     accepted_members_len = len(accepted_members)
     return render(request, 'main/event_detail.html', {'event': event, 'accepted_members': accepted_members,
-                                                      'accepted_members_len': accepted_members_len})
+                                                      'accepted_members_len': accepted_members_len,
+                                                      'free_spots': free_spots})
 
 
 # @login_required
@@ -185,6 +192,23 @@ def create_team(request):
         return redirect(create_event)
 
     return render(request, 'main/create_event.html')
+
+
+def create_team_in_edit(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        num_members = request.POST['num_members']
+
+        try:
+            team = Team(name=name, num_members=num_members)
+            team.save()
+        except ValidationError as e:
+            print(e)
+            pass
+
+        return redirect(request.META.get('HTTP_REFERER', '/default-url/'))
+
+    return render(request, 'main/events.html')
 
 
 def delete_event(request, event_id):

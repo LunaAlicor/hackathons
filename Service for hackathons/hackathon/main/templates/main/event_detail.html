@@ -44,6 +44,13 @@
                         {% for member in members %}
                             <li>{{ member.username }}</li>
                         {% endfor %}
+                        {% for j_team, num in free_spots.items %}
+                            {% if j_team == team %}
+                                {% for _ in num %}
+                                    <li></li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                         {% if team.members.count < team.num_members %}
                             {% if user.is_authenticated %}
                                 <form method="post" action="{% url 'send_application' team.id event.id %}">
