@@ -33,13 +33,25 @@
         <ul>
             {% for team, members in accepted_members.items %}
                 <li>{{ team.name }}
+                {% if user.is_staff %}
+                    <a href="{% url 'team_application' team.id %}">
+                        <button style="margin-left: 1%">Просмотр заявок в команду</button>
+                    </a>
+
+                {% endif %}
                 <p>Список участников команды {{ team.name }}:</p>
                     <ul>
                         {% for member in members %}
                             <li>{{ member.username }}</li>
                         {% endfor %}
                         {% if team.members.count < team.num_members %}
-                            <button>Откликнутся</button>
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'send_application' team.id event.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Откликнуться</button>
+
+                                </form>
+                            {% endif %}
                         {% endif %}
                     </ul>
                 </li>

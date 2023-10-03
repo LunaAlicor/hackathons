@@ -21,6 +21,11 @@ urlpatterns = [
     path('create_team/', views.create_team, name='create_team'),
     path('delete_event/<int:event_id>/', views.delete_event, name='delete_event'),
     path('event/<int:pk>/edit/', views.edit_event, name='edit_event'),
+    path('send_application/<int:team_id><int:event_id>/', views.send_application, name='send_application'),
+    path('team_application/<int:team_id>', views.team_application, name='team_application'),
+    path('approve_application/<int:application_id>/', views.approve_application, name='approve_application'),
+    path('reject_application/<int:application_id>/', views.reject_application, name='reject_application'),
+
 ]
 
 

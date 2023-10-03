@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, NewsEditForm, EventForm, TeamForm, EditEventForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import News, Comment, Like, Event, Team
+from .models import News, Comment, Like, Event, Team, TeamApplication, Membership
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -211,3 +211,52 @@ def edit_event(request, pk):
     else:
         form = EditEventForm(instance=event)
     return render(request, 'main/edit_event.html', {'form': form})
+
+
+def send_application(request, team_id, event_id):
+    if request.method == 'POST':
+        user = request.user
+        team = Team.objects.get(pk=team_id)
+
+        if team.members.filter(pk=user.id).exists() or team.members.count() >= team.num_members:
+            pass
+        else:
+            application, created = TeamApplication.objects.get_or_create(user=user, team=team)
+
+        try:
+            event = Event.objects.get(pk=event_id)
+            return redirect(reverse('event_detail', kwargs={'pk': event.id}))
+        except AttributeError:
+            pass
+
+    return redirect('events')
+
+
+def team_application(request, team_id):
+    team = Team.objects.get(pk=team_id)
+    team_applications = TeamApplication.objects.filter(team_id=team_id)
+
+    return render(request, 'main/team_application.html', {'team_applications': team_applications, 'team': team})
+
+
+def approve_application(request, application_id):
+    application = get_object_or_404(TeamApplication, pk=application_id)
+    application.status = 'принято'
+    application.save()
+    membership, created = Membership.objects.get_or_create(user=application.user, team=application.team)
+    membership.status = 'принято'
+    membership.save()
+
+    return redirect('team_application', team_id=application.team.id)
+
+
+def reject_application(request, application_id):
+    application = get_object_or_404(TeamApplication, pk=application_id)
+    application.status = 'отклонено'
+    application.save()
+    membership, created = Membership.objects.get_or_create(user=application.user, team=application.team)
+    membership.status = 'отклонено'
+    membership.save()
+
+    return redirect('team_application', team_id=application.team.id)
+

@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% block title %}Просмотр заявок в команду {% endblock %}
+{% block content %}
+
+<ul>
+    <h1>Просмотр заявок в команду {{team.name}}:</h1>
+    {% for application in team_applications %}
+    {% if application.status == 'ожидание' %}
+        <li>{{application}}
+            <form method="post" action="{% url 'approve_application' application.id %}">
+                {% csrf_token %}
+                <button type="submit" style="background: darkseagreen" name="approve">Принять</button>
+            </form>
+
+            <form method="post" action="{% url 'reject_application' application.id %}">
+                {% csrf_token %}
+                <button type="submit" style="background: firebrick" name="reject">Отклонить</button>
+            </form>
+
+        </li>
+    {% endif %}
+    {% endfor %}
+    <button onclick="history.go(-1);">Назад</button>
+</ul>
+
+{% endblock %}

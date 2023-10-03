@@ -9,7 +9,7 @@
     <h2 style="text-align: center;margin-top: 2px;margin-bottom: 2px;">Создание новости</h2>
     {% csrf_token %}
     <label for="title">Заголовок</label>
-    <input type="text" id="title" name="title">
+    <input type="text" id="title" name="title" required>
     <br>
     <label for="content">Текст новости</label>
     <textarea id="content" name="content"></textarea>
