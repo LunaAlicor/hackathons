@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 {% block title %}Просмотр заявок в команду {% endblock %}
 {% block content %}
-
+{% if user.is_staff %}
 <ul>
     <h1>Просмотр заявок в команду {{team.name}}:</h1>
     {% for application in team_applications %}
@@ -22,5 +22,7 @@
     {% endfor %}
     <button onclick="history.go(-1);">Назад</button>
 </ul>
-
+{% else %}
+<button onclick="history.go(-1);">Назад</button>
+{% endif %}
 {% endblock %}
