@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 # Create your views here.
@@ -27,6 +28,18 @@ def about(request):
 
 def events(request):
     events = Event.objects.all().order_by('-id')
+    now = timezone.localdate()
+    for event in events:
+        if now < event.registration_date:
+            event.status = 'Активно'
+            event.save()
+        elif event.registration_date <= now < event.date:
+            event.status = 'регистрация'
+            event.save()
+        elif now > event.date:
+            event.status = 'Архив'
+            event.save()
+
     return render(request, 'main/events.html', {'events': events})
 
 
