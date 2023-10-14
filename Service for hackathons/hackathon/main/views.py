@@ -5,12 +5,14 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import News, Comment, Like, Event, Team, TeamApplication, Membership
+from .models import News, Comment, Like, Event, Team, TeamApplication, Membership, Tag
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from rest_framework import viewsets
+from .serializers import NewsSerializer, CommentSerializer, LikeSerializer, EventSerializer, TagSerializer, TeamSerializer, MembershipSerializer, TeamApplicationSerializer
 
 
 # Create your views here.
@@ -297,3 +299,42 @@ def reject_application(request, application_id):
 
     return redirect('team_application', team_id=application.team.id)
 
+
+class NewsViewSet(viewsets.ModelViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+
+
+class MembershipViewSet(viewsets.ModelViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+
+
+class TeamApplicationViewSet(viewsets.ModelViewSet):
+    queryset = TeamApplication.objects.all()
+    serializer_class = TeamApplicationSerializer
