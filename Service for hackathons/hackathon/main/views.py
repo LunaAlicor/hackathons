@@ -77,11 +77,14 @@ def register_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         email = request.POST.get('email')
-        user = User.objects.create_user(username=username, password=password, email=email)
 
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Пользователь с таким логином уже существует.')
+            return render(request, 'main/register.html')
+
+        user = User.objects.create_user(username=username, password=password, email=email)
         user = authenticate(request, username=username, password=password)
         login(request, user)
-
         return redirect('index')
 
     return render(request, 'main/register.html')
