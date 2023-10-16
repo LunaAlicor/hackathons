@@ -15,7 +15,15 @@
     <p>В центре нашей методики - индивидуальный подход к каждому участнику и дружеская атмосфера. Помимо групповых занятий, каждый студент получает индивидуальные консультации и задания для самостоятельной работы. Если вы хотите развить свои навыки в программировании, любите решать сложные задачи и хотите стать частью нашей дружной команды - присоединяйтесь к нам в эту субботу в 15:00 в аудитории 3315. Мы ждем вас!</p>
     <p>Кстати сайт и мобильное приложение к нему были разработаны как раз в рамках этой секции</p>
     <p>
-        <img id="img0" src="{% static 'main/img/about_photos/1.jpg' %}" onclick="imgchange()" style="width: 40%; margin-left: 27%; margin-right: 30%;">
+        <div style="text-align: center;">
+            <div style="display: inline-block;">
+                <button id="prevButton" onclick="prevImage()">&#9665;</button>
+            </div>
+            <img id="img0" src="{% static 'main/img/about_photos/1.jpg' %}" style="width: 40%;" onclick="imgchange()">
+            <div style="display: inline-block;">
+                <button id="nextButton" onclick="nextImage()">&#9655;</button>
+            </div>
+        </div>
         <ul>
             <li><h2 style="text-align: center;">Полезная информация</h2></li>
             <li>
@@ -43,7 +51,31 @@ function imgchange() {
     currentIndex = (currentIndex + 1) % images.length;
     img.src = images[currentIndex];
 }
+function autoChangeImage() {
+    setInterval(function() {
+        currentIndex = (currentIndex + 1) % images.length;
+        var img = document.getElementById("img0");
+        img.src = images[currentIndex];
+    }, 15000); // 15000 миллисекунд = 15 секунд
+}
 
+function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateImage();
+}
+
+function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateImage();
+}
+
+function updateImage() {
+    var img = document.getElementById("img0");
+    img.src = images[currentIndex];
+}
+
+
+autoChangeImage();
     </script>
 </div>
 {% endblock %}
