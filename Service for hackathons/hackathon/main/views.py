@@ -11,8 +11,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .serializers import NewsSerializer, CommentSerializer, LikeSerializer, EventSerializer, TagSerializer, TeamSerializer, MembershipSerializer, TeamApplicationSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 
 # Create your views here.
@@ -114,15 +116,6 @@ def event_detail(request, pk):
     return render(request, 'main/event_detail.html', {'event': event, 'accepted_members': accepted_members,
                                                       'accepted_members_len': accepted_members_len,
                                                       'free_spots': free_spots})
-
-
-# @login_required
-# def like_news(request, news_id):
-#     news = News.objects.get(id=news_id)
-#     news.like_count += 1
-#     news.save()
-#
-#     return redirect('news_detail', news_id=news_id)
 
 
 # @login_required
@@ -341,3 +334,71 @@ class MembershipViewSet(viewsets.ModelViewSet):
 class TeamApplicationViewSet(viewsets.ModelViewSet):
     queryset = TeamApplication.objects.all()
     serializer_class = TeamApplicationSerializer
+
+
+
+
+
+@csrf_exempt
+def like_news(request, news_id):
+    try:
+        news = News.objects.get(pk=news_id)
+        like, created = Like.objects.get_or_create(user=request.user, news=news)
+
+        if not created:
+            # Пользователь уже поставил лайк, уберите его
+            like.delete()
+        else:
+            # Увеличьте счетчик лайков
+            news.like_count += 1
+            news.save()
+
+        return JsonResponse({'message': 'Liked successfully'})
+    except News.DoesNotExist:
+        return JsonResponse({'message': 'News not found'})
+
+
+@csrf_exempt
+def like_comment(request, comment_id):
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+        like, created = Like.objects.get_or_create(user=request.user, comment=comment)
+
+        if not created:
+            # Пользователь уже поставил лайк, уберите его
+            like.delete()
+        else:
+            # Увеличьте счетчик лайков для комментария в базе данных
+            comment.like_count += 1
+            comment.save()
+
+        return JsonResponse({'message': 'Liked successfully'})
+    except Comment.DoesNotExist:
+        return JsonResponse({'message': 'Comment not found'})
+
+
+@api_view(['POST'])
+def leave_comment(request, news_id):
+    if request.method == 'POST':
+        content = request.data.get('content')  # Изменим на request.data
+        user = request.user
+        news = News.objects.get(id=news_id)
+        like_count = 0
+        comment = Comment.objects.create(user=user, news=news, content=content, like_count=like_count)
+        comment_serializer = CommentSerializer(comment)
+        return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
+    return redirect('index')
+
+
+def del_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if not request.user.is_staff:
+        messages.error(request, "У вас недостаточно прав для удаления чужого комментария!")
+        return redirect('index')
+
+    if request.method == "POST":
+        comment.delete()
+        messages.success(request, 'Комментарий удален!')
+        return redirect('index')
+
+    return redirect('index')

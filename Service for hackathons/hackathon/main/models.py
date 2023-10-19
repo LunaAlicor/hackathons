@@ -28,7 +28,7 @@ class Comment(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='likes')
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='likes', null=True)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes', null=True)
     date_liked = models.DateTimeField(auto_now_add=True)
 

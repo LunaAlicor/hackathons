@@ -3,7 +3,7 @@
 {% block title %}Новости{% endblock %}
 
 {% block content %}
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <ul style="margin-right: 2%;">
     {% if user.is_staff %}
@@ -19,24 +19,30 @@
       <p>Дата публикации: {{ single_news.date_published }}</p>
       <img src="{{ single_news.photo.url }}" alt="Фото новости">
       <p>Количество лайков: <span id="like-count-{{ single_news.id }}">{{ single_news.like_count }}</span></p>
-      <button type="button" onclick="">Like</button>
+      <button class="like-button" data-news-id="{{ single_news.id }}">Лайк</button>
+
       <button type="button" onclick="location.href='{{ single_news.id }}'">Перейти к новости</button>
       <h2>Комментарии:</h2>
       <div>
-        <a href=""><button style="margin-bottom: 2px;"><label style="color: white; font-weight: bold;">Оставить комментарий: </label></button></a>
-        <textarea name="content" placeholder="Напишите ваш комментарий"></textarea>
+          <form id="comment-form" data-news-id="{{ single_news.id }}">
+              {% csrf_token %}
+              <textarea id="content" placeholder="Напишите ваш комментарий"></textarea>
+              <button type="submit">Оставить комментарий</button>
+          </form>
       </div>
 
       <!-- Первый комментарий -->
       {% if single_news.has_comments  %}
-
+      <div id="comments-container">
       <ul>
         <li>
           <p>{{ single_news.comment_set.first.content }}</p>
           <p>Автор комментария: {{ single_news.comment_set.first.user }}</p>
           <p>Дата комментария: {{ single_news.comment_set.first.date_posted }}</p>
           <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
-          <button type="button" onclick="">Like</button>
+          <button class="like-button-comment" data-comment-id="{{ single_news.comment_set.first.id }}">Лайк</button>
+
+
           {% if user.is_staff %}
             <button>Удалить комментарий</button>
           {% endif %}
@@ -50,8 +56,9 @@
             <p>{{ comment.content }}</p>
             <p>Автор комментария: {{ comment.user }}</p>
             <p>Дата комментария: {{ comment.date_posted }}</p>
-            <p>Количество лайков: {{ comment.like_count }}</p>
-            <button type="button" onclick="">Like</button>
+            <p id="like-count-comment-{{ comment.id }}">Количество лайков: {{ comment.like_count }}</p>
+
+            <button class="like-button-comment" data-comment-id="{{ comment.id }}">Лайк</button>
             {% if user.is_staff %}
             <button>Удалить комментарий</button>
             {% endif %}
@@ -60,6 +67,7 @@
       </ul>
 
       <button type="button" onclick="showAllComments({{single_news.id}})" id="commentButton">Показать все комментарии</button>
+      </div>
       {% endif %}
 
       <script>
@@ -68,6 +76,77 @@
           hiddenComments.style.display = 'block';
           document.querySelector("#commentButton").style.display = "none";
         }
+
+$(document).ready(function () {
+    $('.like-button').one('click', function () {
+        const button = $(this);
+        const id = button.data('news-id') || button.data('comment-id');
+        const url = button.data('news-id') ? `/news/${id}/like/` : `/comment/${id}/like/`;
+
+        $.post(url, function (data) {
+            if (data.message === 'Liked successfully') {
+                // Обновление UI
+                const likeCountElement = $(`#like-count-${id}`);
+                const currentLikes = parseInt(likeCountElement.text())+1;
+                likeCountElement.text(currentLikes); // Увеличьте счетчик на 1
+
+                // Доработать стиль
+                button.addClass('liked');
+            } else {
+                alert('Ошибка при лайке');
+            }
+        });
+    });
+});
+
+
+$(document).ready(function () {
+    $('.like-button-comment').one('click', function () {
+        const button = $(this);
+        const commentId = button.data('comment-id');
+        const url = `/comment/${commentId}/like/`;
+
+        $.post(url, function (data) {
+            if (data.message === 'Liked successfully') {
+                // Обновление UI
+                const likeCountElement = $(`#like-count-comment-${commentId}`);
+                const currentLikes = parseInt(likeCountElement.text());
+                likeCountElement.text(currentLikes + 1);
+
+                // Сделать стиль для лайкнутого объекта
+                button.addClass('liked');
+            } else {
+                alert('Ошибка при лайке комментария');
+            }
+        });
+    });
+});
+
+
+$(document).ready(function () {
+        $("#comment-form").on("submit", function (event) {
+            event.preventDefault();
+            var newsId = $(this).data("news-id");
+            var content = $("#content").val();
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'leave_comment' 0 %}".replace(0, newsId),
+                data: {content: content, csrfmiddlewaretoken: "{{ csrf_token }}"},
+                success: function (data) {
+
+                    $("#content").val("");
+                    var commentHtml = '<li style="margin-top: 3px;">Ваш комментарий: ' + data.content + '</li>';
+                    $("#comments-container").append(commentHtml);
+                },
+                error: function (error) {
+
+                    console.log(error);
+                }
+            });
+        });
+    });
+
       </script>
 
     </li>
