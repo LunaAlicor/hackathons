@@ -42,7 +42,7 @@
     <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
     <button class="like-button-comment" data-comment-id="{{ single_news.comment_set.first.id }}">Лайк</button>
 
-    {% if user.is_staff %}
+    {% if user.is_staff  or comment.user == user %}
       <button class="delete-comment-button" data-comment-id="{{ single_news.comment_set.first.id }}">Удалить комментарий</button>
     {% endif %}
   </li>
@@ -58,7 +58,7 @@
             <p id="like-count-comment-{{ comment.id }}">Количество лайков: {{ comment.like_count }}</p>
 
             <button class="like-button-comment" data-comment-id="{{ comment.id }}">Лайк</button>
-          {% if user.is_staff %}
+          {% if user.is_staff or comment.user == user %}
             <button class="delete-comment-button" data-comment-id="{{ comment.id }}">Удалить комментарий</button>
           {% endif %}
           </li>

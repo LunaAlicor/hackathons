@@ -392,7 +392,7 @@ def leave_comment(request, news_id):
 
 def del_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    if not request.user.is_staff:
+    if not request.user.is_staff and comment.user != request.user:
         return JsonResponse({"success": False, "message": "У вас недостаточно прав для удаления чужого комментария!"})
 
     if request.method == "POST":
