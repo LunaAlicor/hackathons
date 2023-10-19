@@ -34,20 +34,19 @@
       <!-- Первый комментарий -->
       {% if single_news.has_comments  %}
       <div id="comments-container">
-      <ul>
-        <li>
-          <p>{{ single_news.comment_set.first.content }}</p>
-          <p>Автор комментария: {{ single_news.comment_set.first.user }}</p>
-          <p>Дата комментария: {{ single_news.comment_set.first.date_posted }}</p>
-          <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
-          <button class="like-button-comment" data-comment-id="{{ single_news.comment_set.first.id }}">Лайк</button>
+<ul>
+  <li>
+    <p>{{ single_news.comment_set.first.content }}</p>
+    <p>Автор комментария: {{ single_news.comment_set.first.user }}</p>
+    <p>Дата комментария: {{ single_news.comment_set.first.date_posted }}</p>
+    <p>Количество лайков: {{ single_news.comment_set.first.like_count }}</p>
+    <button class="like-button-comment" data-comment-id="{{ single_news.comment_set.first.id }}">Лайк</button>
 
-
-          {% if user.is_staff %}
-            <button>Удалить комментарий</button>
-          {% endif %}
-        </li>
-      </ul>
+    {% if user.is_staff %}
+      <button class="delete-comment-button" data-comment-id="{{ single_news.comment_set.first.id }}">Удалить комментарий</button>
+    {% endif %}
+  </li>
+</ul>
 
       <!-- Остальные комментарии (начально скрыты) -->
       <ul id="hidden-comments-{{single_news.id}}" style="display:none">
@@ -59,15 +58,26 @@
             <p id="like-count-comment-{{ comment.id }}">Количество лайков: {{ comment.like_count }}</p>
 
             <button class="like-button-comment" data-comment-id="{{ comment.id }}">Лайк</button>
-            {% if user.is_staff %}
-            <button>Удалить комментарий</button>
-            {% endif %}
+          {% if user.is_staff %}
+            <button class="delete-comment-button" data-comment-id="{{ comment.id }}">Удалить комментарий</button>
+          {% endif %}
           </li>
         {% endfor %}
       </ul>
 
+
+
       <button type="button" onclick="showAllComments({{single_news.id}})" id="commentButton">Показать все комментарии</button>
       </div>
+
+
+            <div id="deleteCommentModal" class="modal">
+          <div class="modal-content">
+            <p>Вы уверены, что хотите удалить этот комментарий?</p>
+            <button class="confirm-delete-button">Да</button>
+            <button class="cancel-delete-button">Отмена</button>
+          </div>
+    </div>
       {% endif %}
 
       <script>
@@ -147,6 +157,56 @@ $(document).ready(function () {
         });
     });
 
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteCommentButtons = document.querySelectorAll(".delete-comment-button");
+        const confirmDeleteButton = document.querySelector(".confirm-delete-button");
+        const cancelDeleteButton = document.querySelector(".cancel-delete-button");
+        const deleteCommentModal = document.getElementById("deleteCommentModal");
+
+        let commentIdToDelete = null;
+
+        deleteCommentButtons.forEach(function(button) {
+            button.addEventListener("click", function(event) {
+                commentIdToDelete = event.target.dataset.commentId;
+                deleteCommentModal.style.display = "block";
+            });
+        });
+
+        confirmDeleteButton.addEventListener("click", function() {
+            if (commentIdToDelete) {
+                // Отправьте AJAX-запрос для удаления комментария на сервер
+                fetch(`/delete_comment/${commentIdToDelete}/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Если удаление прошло успешно, скройте модальное окно и выполните дополнительные действия (например, удалите комментарий из DOM)
+                        deleteCommentModal.style.display = "none";
+                    } else {
+                        // В случае ошибки отобразите сообщение об ошибке
+                        console.error("Ошибка при удалении комментария");
+                    }
+                });
+            }
+        });
+
+        cancelDeleteButton.addEventListener("click", function() {
+            commentIdToDelete = null;
+            deleteCommentModal.style.display = "none";
+        });
+
+        // Получение значения CSRF-токена из куки
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+    });
       </script>
 
     </li>

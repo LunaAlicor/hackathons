@@ -393,12 +393,10 @@ def leave_comment(request, news_id):
 def del_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if not request.user.is_staff:
-        messages.error(request, "У вас недостаточно прав для удаления чужого комментария!")
-        return redirect('index')
+        return JsonResponse({"success": False, "message": "У вас недостаточно прав для удаления чужого комментария!"})
 
     if request.method == "POST":
         comment.delete()
-        messages.success(request, 'Комментарий удален!')
-        return redirect('index')
+        return JsonResponse({"success": True, "message": "Комментарий удален!"})
 
-    return redirect('index')
+    return JsonResponse({"success": False, "message": "Недопустимый метод запроса"})

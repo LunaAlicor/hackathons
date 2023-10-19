@@ -46,6 +46,7 @@ urlpatterns = [
     path('news/<int:news_id>/like/', views.like_news, name='like_news'),
     path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'),
     path('leave_comment/<int:news_id>/', views.leave_comment, name='leave_comment'),
+    path('delete_comment/<int:comment_id>/', views.del_comment, name='delete_comment'),
 ]
 
 
