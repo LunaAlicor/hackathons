@@ -71,14 +71,17 @@ document.querySelector(".btn-danger").addEventListener("click", function() {
       </div>
     <ul>
     {% for comment in post.comment_set.all %}
-         <p><li>{{ comment.content }}</li></p>
+        <li>
+         <p>{{ comment.content }}</p>
           <p>Автор комментария: {{ comment.user }}</p>
           <p>Дата комментария: {{ comment.date_posted }}</p>
           <p>Лайки: {{ comment.like_count }}</p>
           <button type="button" onclick="">Like</button>
+
           {% if user.is_staff %}
             <button>Удалить комментарий</button>
           {% endif %}
+        </li>
     {% endfor %}
   </ul>
 </ul>

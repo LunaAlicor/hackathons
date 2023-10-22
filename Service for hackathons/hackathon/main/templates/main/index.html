@@ -98,7 +98,7 @@ $(document).ready(function () {
                 // Обновление UI
                 const likeCountElement = $(`#like-count-${id}`);
                 const currentLikes = parseInt(likeCountElement.text())+1;
-                likeCountElement.text(currentLikes); // Увеличьте счетчик на 1
+                likeCountElement.text(currentLikes); //
 
                 // Доработать стиль
                 button.addClass('liked');
@@ -175,7 +175,7 @@ $(document).ready(function () {
 
         confirmDeleteButton.addEventListener("click", function() {
             if (commentIdToDelete) {
-                // Отправьте AJAX-запрос для удаления комментария на сервер
+                // AJAX-запрос
                 fetch(`/delete_comment/${commentIdToDelete}/`, {
                     method: "POST",
                     headers: {
